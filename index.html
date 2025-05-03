@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portal Miraculous</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      transition: background 0.5s, color 0.5s;
+      background: linear-gradient(to bottom, #1e1e2f, #2c2c3f);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    .modo-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 10px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 10px;
+      color: white;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 3em;
+      text-shadow: 0 0 10px #fff;
+    }
+
+    .carrossel {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding: 30px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .joia {
+      flex: 0 0 auto;
+      scroll-snap-align: center;
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 20px;
+      text-align: center;
+      width: 200px;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .joia:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px #fff;
+    }
+
+    input {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 10px;
+      border: none;
+      text-align: center;
+    }
+
+    .texto-flutuante {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-style: italic;
+      opacity: 0.6;
+      animation: flutuar 8s infinite;
+    }
+
+    @keyframes flutuar {
+      0% { transform: translateY(0); opacity: 0.3; }
+      50% { transform: translateY(-10px); opacity: 0.8; }
+      100% { transform: translateY(0); opacity: 0.3; }
+    }
+
+    .contador {
+      margin-top: 10px;
+      font-size: 0.9em;
+      opacity: 0.8;
+    }
+
+    .modo-claro {
+      background: linear-gradient(to bottom, #f0f0f0, #ffffff);
+      color: black;
+    }
+
+  </style>
+</head>
+<body>
+  <button class="modo-btn" onclick="alternarModo()">Modo Claro/Escuro</button>
+  <h1>Escolha seu Miraculos</h1>
+  <div class="carrossel" id="carrossel">
+    <!-- Joias -->
+    <div class="joia" data-codigo="azul marinho" data-url="https://curancat.github.io/Cobra/" data-som="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c9b6c5f3b.mp3?filename=snake-hiss-95241.mp3">🐍<br>Sazz<br><input type="password" placeholder="Senha"></div>
+    <div class="joia" data-codigo="070308" data-url="https://curancat.github.io/Nooro/" data-som="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c9b6c5f3b.mp3?filename=butterfly-wings-fluttering-2-28738.mp3">🦋<br>Nooro<br><input type="password" placeholder="Senha"></div>
+    <div class="joia" data-codigo="arte" data-url="https://curancat.github.io/Ziggy/" data-som="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c9b6c5f3b.mp3?filename=goat-bleat-17843.mp3">🐐<br>Ziggy<br><input type="password" placeholder="Senha"></div>
+    <div class="joia" data-codigo="ChucaRosa" data-url="https://curancat.github.io/Galo/" data-som="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c9b6c5f3b.mp3?filename=rooster-crow-17843.mp3">🐓<br>Orikko<br><input type="password" placeholder="Senha"></div>
+    <div class="joia" data-codigo="560045" data-url="https://curancat.github.io/Miraculos-/" data-som="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c9b6c5f3b.mp3?filename=dragon-roar-38093.mp3">🐉<br>Longg<br><input type="password" placeholder="Senha"></div>
+    <div class="joia" data-codigo="não tem senha" data-url="https://curancat.github.io/Gato/" data-som="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c9b6c5f3b.mp3?filename=cat-meow-17843.mp3">🐈‍⬛<br>Plagg<br><input type="password" placeholder="Senha"></div>
+    <div class="joia" data-codigo="Corrupção" data-url="https://curancat.github.io/Cavalo/" data-som="https://cdn.pixabay.com/download/audio/2022/03/15/audio_1c9b6c5f3b.mp3?filename=horse-neigh-17843.mp3">🐎<br>Calkki<br><input type="password" placeholder="Senha"></div>
+  </div>
+
+  <div class="texto-flutuante" id="mensagemFlutuante">"Regras são apenas para Referência"</div>
+
+  <audio id="musicaFundo" src="https://www.fesliyanstudios.com/play-mp3/387" autoplay loop></audio>
+  <audio id="somJoia"></audio>
+
+  <script>
+    const musica = document.getElementById('musicaFundo');
+    const som = document.getElementById('somJoia');
+
+    document.querySelectorAll('.joia').forEach(joia => {
+      joia.addEventListener('click', (e) => {
+        if (e.target.tagName === "INPUT") return;
+        const senha = joia.querySelector('input').value.toLowerCase().trim();
+        const codigo = joia.dataset.codigo.toLowerCase();
+        const url = joia.dataset.url;
+        const somArquivo = joia.dataset.som;
+
+        if (senha === codigo) {
+          som.src = somArquivo;
+          som.play();
+          iniciarContador(joia);
+          setTimeout(() => {
+            window.location.href = url;
+          }, 5000);
+        } else {
+          alert('Senha incorreta!');
+        }
+      });
+    });
+
+    function alternarModo() {
+      document.body.classList.toggle('modo-claro');
+    }
+
+    function iniciarContador(joia) {
+      const contador = document.createElement('div');
+      contador.classList.add('contador');
+      let tempo = 5;
+      contador.textContent = `Redirecionando em ${tempo}s`;
+      joia.appendChild(contador);
+
+      const intervalo = setInterval(() => {
+        tempo--;
+        if (tempo <= 0) {
+          clearInterval(intervalo);
+        } else {
+          contador.textContent = `Redirecionando em ${tempo}s`;
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
